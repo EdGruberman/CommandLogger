@@ -1,0 +1,5 @@
+name: WrapperCommands
+version: %VERSION%
+depend: [MessageManager]
+main: edgruberman.bukkit.wrappercommands.Main
+author: EdGruberman (ed@rjump.com)
