@@ -15,7 +15,7 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
     
     public PlayerListener(Plugin plugin) {
         this.logger = plugin.getServer().getLogger();
-
+        
         PluginManager pluginManager = Bukkit.getServer().getPluginManager();
         pluginManager.registerEvent(Event.Type.PLAYER_COMMAND_PREPROCESS, this, Event.Priority.Monitor, plugin);
     }
