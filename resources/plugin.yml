@@ -1,5 +1,4 @@
-name: WrapperCommands
+name: CommandLogger
 version: %VERSION%
-depend: [MessageManager]
-main: edgruberman.bukkit.wrappercommands.Main
+main: edgruberman.bukkit.commandlogger.Main
 author: EdGruberman (ed@rjump.com)
