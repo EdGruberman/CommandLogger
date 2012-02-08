@@ -7,11 +7,20 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Main extends JavaPlugin implements Listener {
 
+    private String logAdmin = "%1$s issued server command: %2$s";
+    private String logConsole = "%1$s issued server command: %2$s";
+    private String logPlayer = "%1$s tried command: %2$s";
+
+    private Logger logger;
+
     public void onLoad() {
+        this.logger = this.getLogger();
+        this.logger.setLevel(Level.FINE);
         this.getLogger().log(Level.INFO, "Version " + this.getDescription().getVersion());
     }
 
@@ -26,13 +35,15 @@ public final class Main extends JavaPlugin implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerCommandPreprocess(final PlayerCommandPreprocessEvent event) {
-        Logger logger = this.getServer().getLogger();
-
-        String message = "%1$s tried command: %2$s";
-        if (event.getPlayer().isOp()) message = "%1$s issued server command: %2$s";
+        String message = (event.getPlayer().isOp() ? this.logAdmin : this.logPlayer);
         message = String.format(message, event.getPlayer().getName(), event.getMessage().substring(1));
+        this.logger.log(Level.INFO, message);
+    }
 
-        logger.log(Level.INFO, message);
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onServerCommand(final ServerCommandEvent event) {
+        String message = String.format(this.logConsole, event.getSender().getName(), event.getCommand());
+        this.logger.log(Level.FINE, message);
     }
 
 }
