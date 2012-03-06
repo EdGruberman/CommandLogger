@@ -1,4 +1,5 @@
-name: CommandLogger
-version: %VERSION%
+name: @NAME@
+description: Logs console and player command usage
+version: @VERSION@
+author: @AUTHOR@
 main: edgruberman.bukkit.commandlogger.Main
-author: EdGruberman (ed@rjump.com)

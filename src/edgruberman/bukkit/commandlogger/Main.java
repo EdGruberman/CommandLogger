@@ -12,25 +12,21 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Main extends JavaPlugin implements Listener {
 
-    private String logAdmin = "%1$s issued server command: %2$s";
-    private String logConsole = "%1$s issued server command: %2$s";
-    private String logPlayer = "%1$s tried command: %2$s";
+    private final String logAdmin = "%1$s issued server command: %2$s";
+    private final String logConsole = "%1$s issued server command: %2$s";
+    private final String logPlayer = "%1$s tried command: %2$s";
 
     private Logger logger;
 
+    @Override
     public void onLoad() {
         this.logger = this.getLogger();
         this.logger.setLevel(Level.FINE);
-        this.getLogger().log(Level.INFO, "Version " + this.getDescription().getVersion());
     }
 
+    @Override
     public void onEnable() {
         this.getServer().getPluginManager().registerEvents(this, this);
-        this.getLogger().log(Level.INFO, "Plugin Enabled");
-    }
-
-    public void onDisable() {
-        this.getLogger().log(Level.INFO, "Plugin Disabled");
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -42,7 +38,7 @@ public final class Main extends JavaPlugin implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onServerCommand(final ServerCommandEvent event) {
-        String message = String.format(this.logConsole, event.getSender().getName(), event.getCommand());
+        final String message = String.format(this.logConsole, event.getSender().getName(), event.getCommand());
         this.logger.log(Level.FINE, message);
     }
 
