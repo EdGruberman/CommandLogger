@@ -1,0 +1,3 @@
+player: '%1$s tried command: %2$s'
+operator: '%1$s issued server command: %2$s'
+console: '%1$s issued server command: %2$s'
