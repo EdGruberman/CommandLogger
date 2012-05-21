@@ -17,30 +17,13 @@ public final class Main extends JavaPlugin implements Listener {
     public void onEnable() {
         if (!new File(this.getDataFolder(), "config.yml").isFile()) this.saveDefaultConfig();
         this.reloadConfig();
-        this.setLoggingLevel();
+        this.setLoggingLevel(this.getConfig().getString("logLevel", "INFO"));
         this.getServer().getPluginManager().registerEvents(this, this);
-    }
-
-    private void setLoggingLevel() {
-        this.reloadConfig();
-        final String name = this.getConfig().getString("logLevel", "INFO");
-        Level level;
-        try { level = Level.parse(name); } catch (final Exception e) {
-            level = Level.INFO;
-            this.getLogger().warning("Unrecognized java.util.logging.Level in \"" + this.getDataFolder().getPath() + "\\config.yml\"; logLevel: " + name);
-        }
-
-        // Only set the parent handler lower if necessary, otherwise leave it alone for other configurations that have set it.
-        for (final Handler h : this.getLogger().getParent().getHandlers())
-            if (h.getLevel().intValue() > level.intValue()) h.setLevel(level);
-
-        this.getLogger().setLevel(level);
-        this.getLogger().log(Level.CONFIG, "Logging level set to: " + this.getLogger().getLevel());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerCommandPreprocess(final PlayerCommandPreprocessEvent event) {
-        String message = (event.getPlayer().isOp() ? this.getConfig().getString("operator") : this.getConfig().getString("player"));
+        String message = this.getConfig().getString((event.getPlayer().isOp() ? "operator" : "player"));
         if (message == null || message.length() == 0) return;
 
         message = String.format(message, event.getPlayer().getName(), event.getMessage().substring(1));
@@ -54,6 +37,21 @@ public final class Main extends JavaPlugin implements Listener {
 
         message = String.format(message, event.getSender().getName(), event.getCommand());
         this.getLogger().log(Level.FINE, message);
+    }
+
+    private void setLoggingLevel(final String name) {
+        Level level;
+        try { level = Level.parse(name); } catch (final Exception e) {
+            level = Level.INFO;
+            this.getLogger().warning("Defaulting to " + level.getName() + "; Unrecognized java.util.logging.Level: " + name);
+        }
+
+        // Only set the parent handler lower if necessary, otherwise leave it alone for other configurations that have set it.
+        for (final Handler h : this.getLogger().getParent().getHandlers())
+            if (h.getLevel().intValue() > level.intValue()) h.setLevel(level);
+
+        this.getLogger().setLevel(level);
+        this.getLogger().config("Logging level set to: " + this.getLogger().getLevel());
     }
 
 }
