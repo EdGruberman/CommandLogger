@@ -1,6 +1,5 @@
 package edgruberman.bukkit.commandlogger;
 
-import java.io.File;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 
@@ -15,9 +14,9 @@ public final class Main extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-        if (!new File(this.getDataFolder(), "config.yml").isFile()) this.saveDefaultConfig();
+        this.saveDefaultConfig();
         this.reloadConfig();
-        this.setLoggingLevel(this.getConfig().getString("logLevel", "INFO"));
+        this.setLogLevel(this.getConfig().getString("logLevel"));
         this.getServer().getPluginManager().registerEvents(this, this);
     }
 
@@ -27,7 +26,7 @@ public final class Main extends JavaPlugin implements Listener {
         if (message == null || message.length() == 0) return;
 
         message = String.format(message, event.getPlayer().getName(), event.getMessage().substring(1));
-        this.getLogger().log(Level.INFO, message);
+        this.getLogger().info(message);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -36,22 +35,22 @@ public final class Main extends JavaPlugin implements Listener {
         if (message == null || message.length() == 0) return;
 
         message = String.format(message, event.getSender().getName(), event.getCommand());
-        this.getLogger().log(Level.FINE, message);
+        this.getLogger().fine(message);
     }
 
-    private void setLoggingLevel(final String name) {
+    private void setLogLevel(final String name) {
         Level level;
         try { level = Level.parse(name); } catch (final Exception e) {
             level = Level.INFO;
-            this.getLogger().warning("Defaulting to " + level.getName() + "; Unrecognized java.util.logging.Level: " + name);
+            this.getLogger().warning("Log level defaulted to " + level.getName() + "; Unrecognized java.util.logging.Level: " + name);
         }
 
-        // Only set the parent handler lower if necessary, otherwise leave it alone for other configurations that have set it.
+        // Only set the parent handler lower if necessary, otherwise leave it alone for other configurations that have set it
         for (final Handler h : this.getLogger().getParent().getHandlers())
             if (h.getLevel().intValue() > level.intValue()) h.setLevel(level);
 
         this.getLogger().setLevel(level);
-        this.getLogger().config("Logging level set to: " + this.getLogger().getLevel());
+        this.getLogger().config("Log level set to: " + this.getLogger().getLevel());
     }
 
 }
